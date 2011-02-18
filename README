@@ -1,0 +1,34 @@
+
+Message Queue based on ZooKeeper
+--------------------------------
+
+Objectives
+----------
+
+Build a highly avaiable & reliable queue. The main focus is not on perfomance! 
+
+Tree Structure
+--------------
+
+<app-prefix OR />/
+  /queue
+    /priority+message1
+    /priority+message2
+    ...
+  /consumers
+    /CONSUMER-UUID
+      /status     - ephemeral znode
+      /message
+
+License
+-------
+
+Apache License Version 2.0
+
+Resources
+---------
+
+Inspired by this article wrote by Henry Robinson on the Cloudera blog:
+
+http://www.cloudera.com/blog/2009/05/building-a-distributed-concurrent-queue-with-apache-zookeeper/
+
