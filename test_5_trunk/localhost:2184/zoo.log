@@ -1,0 +1,141 @@
+2011-02-19 17:01:58,073 [myid:] - INFO  [main:QuorumPeerConfig@92] - Reading configuration from: ./localhost:2184/zoo.cfg
+2011-02-19 17:01:58,101 [myid:] - INFO  [main:QuorumPeerConfig@312] - Defaulting to majority quorums
+2011-02-19 17:01:58,267 [myid:4] - INFO  [main:QuorumPeerMain@119] - Starting quorum peer
+2011-02-19 17:01:58,302 [myid:4] - INFO  [main:NIOServerCnxnFactory@93] - binding to port 0.0.0.0/0.0.0.0:2184
+2011-02-19 17:01:58,326 [myid:4] - INFO  [main:QuorumPeer@812] - tickTime set to 2000
+2011-02-19 17:01:58,340 [myid:4] - INFO  [main:QuorumPeer@832] - minSessionTimeout set to -1
+2011-02-19 17:01:58,340 [myid:4] - INFO  [main:QuorumPeer@843] - maxSessionTimeout set to -1
+2011-02-19 17:01:58,340 [myid:4] - INFO  [main:QuorumPeer@858] - initLimit set to 10
+2011-02-19 17:01:58,379 [myid:4] - INFO  [Thread-1:QuorumCnxManager$Listener@470] - My election bind port: 0.0.0.0/0.0.0.0:4184
+2011-02-19 17:01:58,395 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:QuorumPeer@612] - LOOKING
+2011-02-19 17:01:58,416 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:FastLeaderElection@663] - New election. My id =  4, Proposed zxid = 0
+2011-02-19 17:01:58,421 [myid:4] - WARN  [WorkerSender(main):QuorumCnxManager@365] - Cannot open channel to 1 at election address localhost/127.0.0.1:4181
+java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:310)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:176)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:163)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:384)
+	at java.net.Socket.connect(Socket.java:546)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.connectOne(QuorumCnxManager.java:351)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.toSend(QuorumCnxManager.java:320)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.process(FastLeaderElection.java:360)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.run(FastLeaderElection.java:333)
+	at java.lang.Thread.run(Thread.java:636)
+2011-02-19 17:01:58,436 [myid:4] - WARN  [WorkerSender(main):QuorumCnxManager@365] - Cannot open channel to 3 at election address localhost/127.0.0.1:4183
+java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:310)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:176)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:163)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:384)
+	at java.net.Socket.connect(Socket.java:546)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.connectOne(QuorumCnxManager.java:351)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.toSend(QuorumCnxManager.java:320)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.process(FastLeaderElection.java:360)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.run(FastLeaderElection.java:333)
+	at java.lang.Thread.run(Thread.java:636)
+2011-02-19 17:01:58,437 [myid:4] - WARN  [WorkerSender(main):QuorumCnxManager@365] - Cannot open channel to 5 at election address localhost/127.0.0.1:4185
+java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:310)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:176)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:163)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:384)
+	at java.net.Socket.connect(Socket.java:546)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.connectOne(QuorumCnxManager.java:351)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager.toSend(QuorumCnxManager.java:320)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.process(FastLeaderElection.java:360)
+	at org.apache.zookeeper.server.quorum.FastLeaderElection$Messenger$WorkerSender.run(FastLeaderElection.java:333)
+	at java.lang.Thread.run(Thread.java:636)
+2011-02-19 17:01:58,444 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 4 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 4 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,473 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 2 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 2 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,473 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 4 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 2 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,512 [myid:4] - INFO  [localhost/127.0.0.1:4184:QuorumCnxManager$Listener@477] - Received connection request /127.0.0.1:46439
+2011-02-19 17:01:58,522 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 1 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 1 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,534 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 2 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 1 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,535 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 4 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 1 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,556 [myid:4] - INFO  [localhost/127.0.0.1:4184:QuorumCnxManager$Listener@477] - Received connection request /127.0.0.1:46449
+2011-02-19 17:01:58,564 [myid:4] - INFO  [localhost/127.0.0.1:4184:QuorumCnxManager$Listener@477] - Received connection request /127.0.0.1:46452
+2011-02-19 17:01:58,565 [myid:4] - WARN  [Thread-6:QuorumCnxManager$SendWorker@643] - Interrupted while waiting for message on queue
+java.lang.InterruptedException
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2017)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2094)
+	at java.util.concurrent.ArrayBlockingQueue.poll(ArrayBlockingQueue.java:370)
+	at org.apache.zookeeper.server.quorum.QuorumCnxManager$SendWorker.run(QuorumCnxManager.java:631)
+2011-02-19 17:01:58,566 [myid:4] - WARN  [Thread-6:QuorumCnxManager$SendWorker@652] - Send worker leaving thread
+2011-02-19 17:01:58,579 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 4 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 3 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,584 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 1 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,584 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:FastLeaderElection@721] - Updating proposal
+2011-02-19 17:01:58,589 [myid:4] - INFO  [WorkerSender(main):QuorumCnxManager@174] - Have smaller server identifier, so dropping the connection: (5, 4)
+2011-02-19 17:01:58,590 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 4 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,590 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 2 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,593 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), FOLLOWING (n.state), 1 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,602 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 3 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,628 [myid:4] - INFO  [localhost/127.0.0.1:4184:QuorumCnxManager$Listener@477] - Received connection request /127.0.0.1:46462
+2011-02-19 17:01:58,635 [myid:4] - INFO  [WorkerReceiver(main):FastLeaderElection@496] - Notification: 5 (n.leader), 0 (n.zxid), 1 (n.round), LOOKING (n.state), 5 (n.sid), LOOKING (my state)
+2011-02-19 17:01:58,836 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:QuorumPeer@634] - FOLLOWING
+2011-02-19 17:01:58,841 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Learner@80] - TCP NoDelay set to: true
+2011-02-19 17:01:58,881 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:zookeeper.version=3.4.0--1, built on 02/19/2011 14:52 GMT
+2011-02-19 17:01:58,881 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:host.name=ktor
+2011-02-19 17:01:58,881 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.version=1.6.0_20
+2011-02-19 17:01:58,881 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.vendor=Sun Microsystems Inc.
+2011-02-19 17:01:58,882 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.home=/usr/lib/jvm/java-6-openjdk/jre
+2011-02-19 17:01:58,882 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.class.path=log4j.jar:zookeeper.jar:.
+2011-02-19 17:01:58,882 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.library.path=/usr/lib/jvm/java-6-openjdk/jre/lib/i386/server:/usr/lib/jvm/java-6-openjdk/jre/lib/i386:/usr/lib/jvm/java-6-openjdk/jre/../lib/i386:/usr/java/packages/lib/i386:/usr/lib/jni:/lib:/usr/lib
+2011-02-19 17:01:58,882 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.io.tmpdir=/tmp
+2011-02-19 17:01:58,882 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:java.compiler=<NA>
+2011-02-19 17:01:58,903 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:os.name=Linux
+2011-02-19 17:01:58,903 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:os.arch=i386
+2011-02-19 17:01:58,903 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:os.version=2.6.35-23-generic
+2011-02-19 17:01:58,903 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:user.name=andrei
+2011-02-19 17:01:58,904 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:user.home=/home/andrei
+2011-02-19 17:01:58,904 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Environment@97] - Server environment:user.dir=/home/andrei/src/zkmq/test_5_trunk
+2011-02-19 17:01:58,905 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:ZooKeeperServer@153] - Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 datadir ./localhost:2184/data/version-2 snapdir ./localhost:2184/data/version-2
+2011-02-19 17:01:58,922 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Learner@293] - Getting a snapshot from leader
+2011-02-19 17:01:58,925 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Learner@324] - Setting leader epoch 1
+2011-02-19 17:01:58,925 [myid:4] - INFO  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:FileTxnSnapLog@208] - Snapshotting: 0
+2011-02-19 17:02:12,734 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41415
+2011-02-19 17:02:12,739 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41415
+2011-02-19 17:02:12,740 [myid:4] - INFO  [Thread-12:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:12,741 [myid:4] - INFO  [Thread-12:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41415 (no session established for client)
+2011-02-19 17:02:15,742 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41420
+2011-02-19 17:02:15,742 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41420
+2011-02-19 17:02:15,743 [myid:4] - INFO  [Thread-13:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:15,743 [myid:4] - INFO  [Thread-13:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41420 (no session established for client)
+2011-02-19 17:02:18,744 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41425
+2011-02-19 17:02:18,744 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41425
+2011-02-19 17:02:18,745 [myid:4] - INFO  [Thread-14:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:18,745 [myid:4] - INFO  [Thread-14:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41425 (no session established for client)
+2011-02-19 17:02:21,746 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41430
+2011-02-19 17:02:21,746 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41430
+2011-02-19 17:02:21,747 [myid:4] - INFO  [Thread-15:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:21,747 [myid:4] - INFO  [Thread-15:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41430 (no session established for client)
+2011-02-19 17:02:25,093 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41435
+2011-02-19 17:02:25,094 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41435
+2011-02-19 17:02:25,094 [myid:4] - INFO  [Thread-16:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:25,095 [myid:4] - INFO  [Thread-16:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41435 (no session established for client)
+2011-02-19 17:02:28,096 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41440
+2011-02-19 17:02:28,097 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41440
+2011-02-19 17:02:28,097 [myid:4] - INFO  [Thread-17:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:28,097 [myid:4] - INFO  [Thread-17:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41440 (no session established for client)
+2011-02-19 17:02:36,146 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41445
+2011-02-19 17:02:36,147 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41445
+2011-02-19 17:02:36,147 [myid:4] - INFO  [Thread-18:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:36,148 [myid:4] - INFO  [Thread-18:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41445 (no session established for client)
+2011-02-19 17:02:39,149 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41450
+2011-02-19 17:02:39,149 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41450
+2011-02-19 17:02:39,149 [myid:4] - INFO  [Thread-19:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:39,150 [myid:4] - INFO  [Thread-19:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41450 (no session established for client)
+2011-02-19 17:02:42,151 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41455
+2011-02-19 17:02:42,151 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41455
+2011-02-19 17:02:42,152 [myid:4] - INFO  [Thread-20:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:42,152 [myid:4] - INFO  [Thread-20:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41455 (no session established for client)
+2011-02-19 17:02:55,393 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxnFactory@196] - Accepted socket connection from /127.0.0.1:41461
+2011-02-19 17:02:55,394 [myid:4] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2184:NIOServerCnxn@791] - Processing stat command from /127.0.0.1:41461
+2011-02-19 17:02:55,398 [myid:4] - INFO  [Thread-21:NIOServerCnxn$StatCommand@645] - Stat command output
+2011-02-19 17:02:55,400 [myid:4] - INFO  [Thread-21:NIOServerCnxn@967] - Closed socket connection for client /127.0.0.1:41461 (no session established for client)
+2011-02-19 17:03:41,278 [myid:4] - WARN  [QuorumPeer:/0:0:0:0:0:0:0:0:2184:Follower@113] - Got zxid 0x100000001 expected 0x1
+2011-02-19 17:03:41,283 [myid:4] - INFO  [SyncThread:4:FileTxnLog@197] - Creating new log file: log.100000001
+2011-02-19 17:04:02,369 [myid:4] - WARN  [Thread-5:QuorumCnxManager$RecvWorker@721] - Connection broken for id 1, my id = 4, error = java.io.EOFException
+2011-02-19 17:04:02,374 [myid:4] - WARN  [Thread-3:QuorumCnxManager$RecvWorker@721] - Connection broken for id 2, my id = 4, error = java.io.EOFException
