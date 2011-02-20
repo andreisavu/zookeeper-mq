@@ -15,13 +15,7 @@ from subprocess import call
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
-    parser = optparse.OptionParser()
-    parser.add_option('-l', '--leader', action='store_true', default=False,
-        help='Only kill the current leader of the cluster')
-    opts, args = parser.parse_args()
-
     nodes = get_nodes()
-    
     while True:
         n = random.choice(nodes)
         kill_node(n)
