@@ -2,4 +2,5 @@ zktop_log.out
 localhost:218*/zoo.log
 localhost:218*/data/version-2
 localhost:218*/zookeeper_server.pid
-reset/zkrest.log
+rest/zkrest.log
+rest/server.pid
