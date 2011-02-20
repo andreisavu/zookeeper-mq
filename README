@@ -34,7 +34,31 @@ Requirements
 ------------
 
 Tested with Python 2.6
-and python zookeeper 3.4.0--1, built on 02/19/2011 14:52 GMT
+and zkpython 3.4.0--1, built on 02/19/2011 14:52 GMT
+
+You also need simplejson for the rest interface
+
+How to install zkpython?
+------------------------
+
+Fetch the latest sources from the trunk and run:
+
+$ apt-get install sun-java6-jdk libtool libcppunit-dev automake build-essential ant
+
+$ cd zookeeper
+$ ant compile compile_jute
+$ cd src/c/
+$ autoreconf -if
+$ ./configure
+$ make && sudo make install
+$ cd ../contrib/zkpython
+$ ant compile
+$ sudo ant install
+
+After all this you should be able to do:
+
+$ python -c "import zookeeper;print zookeeper.__version__"
+3.4.0
 
 How to test?
 ------------
