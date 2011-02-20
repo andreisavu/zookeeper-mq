@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./rest/rest.sh stop >/dev/null 2>&1
+
 PIDFILE=./localhost:2181/zookeeper_server.pid
 
 if [ -e "$PIDFILE" ]

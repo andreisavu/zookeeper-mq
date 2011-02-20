@@ -15,3 +15,5 @@ echo -n $! > ./localhost:2184/zookeeper_server.pid
 java -cp log4j.jar:zookeeper.jar:. org.apache.zookeeper.server.quorum.QuorumPeerMain ./localhost:2185/zoo.cfg > ./localhost:2185/zoo.log 2>&1 &
 echo -n $! > ./localhost:2185/zookeeper_server.pid
 
+./rest/rest.sh start >/dev/null 2>&1
+
