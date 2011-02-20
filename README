@@ -1,24 +1,59 @@
 
 Message Queue based on ZooKeeper
---------------------------------
+================================
 
 Objectives
 ----------
 
-Build a highly avaiable & reliable queue. The main focus is not on perfomance! 
+Build a highly avaiable & reliable message queue. The main focus is not on perfomance! 
 
-Tree Structure
---------------
+This queue should be able to survive hardware and software upgrades and failures 
+with no downtime for years :) 
 
-<app-prefix OR />/
+The queue should be accesible using both the default zookeeper binary protocol
+and the zookeeper rest interface. 
+
+ZooKeeper Data Tree Structure
+-----------------------------
+
+<chroot-prefix OR />/
   /queue
-    /priority+message1
-    /priority+message2
-    ...
-  /consumers
-    /CONSUMER-UUID
-      /status     - ephemeral znode
-      /message
+    /messages/
+      /message-1
+      /message-2
+      ...
+    /consumers
+      /consumer-1
+        /status     - ephemeral znode
+        /message
+      /consumer-2
+        /status     - ephemeral
+        /message
+
+Requirements
+------------
+
+Tested with Python 2.6
+and python zookeeper 3.4.0--1, built on 02/19/2011 14:52 GMT
+
+How to test?
+------------
+
+You need to start a Zookeeper cluster and (optionaly) a rest interface. The repo
+contains everything needed for starting a ZooKeeper cluster with 5 nodes and
+a rest interface by running the following commands:
+
+$ cd test_5_trunk
+$ ./start.sh       - will start zookeeper and the rest interface
+
+Stop it by running:
+$ ./stop.sh
+
+You can simulate failures on the cluster nodes by running:
+$ python fail.py 
+
+Clean data by running:
+$ ./clean.sh
 
 License
 -------
