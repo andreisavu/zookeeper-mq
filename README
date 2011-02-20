@@ -5,7 +5,7 @@ Message Queue based on ZooKeeper
 Objectives
 ----------
 
-Build a highly avaiable & reliable message queue. The main focus is not on perfomance! 
+Build a highly available & reliable message queue. The main focus is not on perfomance! 
 
 This queue should be able to survive hardware and software upgrades and failures 
 with no downtime for years :) 
