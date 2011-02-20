@@ -2,6 +2,8 @@
 Message Queue based on ZooKeeper
 ================================
 
+WARNING: This is work in progress and it's not production ready.
+
 Objectives
 ----------
 
