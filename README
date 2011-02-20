@@ -24,6 +24,10 @@ ZooKeeper Data Tree Structure
       /message-1
       /message-2
       ...
+    /partial        - total consumer failure
+      /message-1
+      /message-2
+      ...
     /consumers
       /consumer-1
         /status     - ephemeral znode
