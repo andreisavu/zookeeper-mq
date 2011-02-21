@@ -25,6 +25,22 @@ zookeeper.set_log_stream(sys.stdout)
 
 ZOO_OPEN_ACL_UNSAFE = {"perms":0x1f, "scheme":"world", "id" :"anyone"};
 
+def retry_on(*excepts):
+    """ Retry function execution if some known exception types are raised """
+    def _decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    return fn(*args, **kwargs)
+                except Exception, e:
+                    if not any([isinstance(e, _) for _ in excepts]):
+                        raise
+                    # else: retry forever
+                    time.sleep(0.5)
+        return wrapper
+    return _decorator
+
 class ZooKeeper(object):
     """ Basic adapter; always retry on ConnectionLossException """
 
@@ -55,24 +71,12 @@ class ZooKeeper(object):
             sys.exit(-1)
         self._cv.release()
 
-    def _retry_on_connection_loss(self, fn):
-        """ Retry calling the function on ConnectionLossException """
-        @functools.wraps(fn)
-        def wrapper(*args, **kwargs):
-            # XXX add a time limit. Important for producers!
-            while True:
-                try:
-                    return fn(*args, **kwargs)
-                except zookeeper.ConnectionLossException:
-                    time.sleep(0.5)
-        return wrapper
-
     def __getattr__(self, name):
         """ Pass-Through with connection handle and retry on ConnectionLossException """
         value = getattr(zookeeper, name)
         if callable(value):
             return functools.partial(
-                self._retry_on_connection_loss(value), 
+                retry_on(zookeeper.ConnectionLossException)(value), 
                 self._handle
             )
         else:
@@ -92,6 +96,7 @@ class Producer(object):
         self._zk.ensure_exists('/queue')
         self._zk.ensure_exists('/queue/items')
 
+    @retry_on(zookeeper.NoNodeException)
     def put(self, data):
         name = self._zk.create("/queue/items/item-", "", 
             [ZOO_OPEN_ACL_UNSAFE], 
@@ -124,9 +129,19 @@ class Consumer(object):
     def _move(self, src, dest):
         try:
             (data, stat) = self._zk.get(src, None)
-            self._zk.set(dest, data)
-            self._zk.delete(src, stat['version'])
-            return data
+            if data:
+                self._zk.set(dest, data)
+                self._zk.delete(src, stat['version'])
+                return data
+
+            elif stat['ctime'] < (time.time() - 300): # 5 minutes
+                # a producer failed to enqueue an element
+                # the consumer should just drop the empty item
+                try:
+                    self._zk.delete(src)
+                except zookeeper.NoNodeException:
+                    pass # someone else already removed the node
+                return None
 
         except zookeeper.NoNodeException:
             # a consumer already reserved this znode
@@ -180,6 +195,20 @@ class Consumer(object):
     def __repr__(self):
         return '<Consumer id=%r>' % self._id
 
+class GarbageCollector(object):
+
+    def __init__(self, zk):
+        self._zk = zk
+
+        map(self._zk.ensure_exists, ('/queue', 
+            '/queue/consumers', '/queue/partial'))
+ 
+    def collect(self):
+        children = self._zk.get_children('/queue/consumers', None)
+        for child in children:
+            # XXX remove old inactive consumers
+            break
+
 if __name__ == '__main__':
     zk = ZooKeeper("localhost:2181,localhost:2182")
 
@@ -198,5 +227,4 @@ if __name__ == '__main__':
     c.close()
 
     zk.close()
-
 
