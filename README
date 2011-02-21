@@ -41,7 +41,7 @@ ZooKeeper Availability
 
 A ZooKeeper cluster with N servers will still be available if CEIL(N/2)-1 nodes fail!
 
-E.g. if you run a cluster with five nodes you will to take one offline for maintenance
+E.g. if you run a cluster with five nodes you can take one offline for maintenance
 anytime and you will still be able to handle an unexpected failure.
 
 Requirements
