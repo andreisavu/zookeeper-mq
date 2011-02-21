@@ -37,7 +37,7 @@ def retry_on(*excepts):
                     if not any([isinstance(e, _) for _ in excepts]):
                         raise
                     # else: retry forever
-                    time.sleep(0.5)
+                    time.sleep(5)
         return wrapper
     return _decorator
 
@@ -57,30 +57,46 @@ class ZooKeeper(object):
         """ Open a connection to the quorum and for it to be established """
         def watcher(handle, type, state, path):
             self._cv.acquire()
-            self._connected = True
-
-            self._cv.notify()
-            self._cv.release()
+            try:
+                self._connected = True
+                self._cv.notify()
+            finally:
+                self._cv.release()
 
         self._cv.acquire()
-        self._handle = zookeeper.init(self._quorum, watcher, 10000)
+        try:
+            self._handle = zookeeper.init(self._quorum, watcher, 10000)
 
-        self._cv.wait(10.0)
-        if not self._connected:
-            print >>sys.stderr, 'Unable to connecto the ZooKeeper cluster.'
-            sys.exit(-1)
-        self._cv.release()
+            self._cv.wait(10.0)
+            if not self._connected:
+                print >>sys.stderr, 'Unable to connecto the ZooKeeper cluster.'
+                sys.exit(-1)
+        finally:
+            self._cv.release()
 
     def __getattr__(self, name):
         """ Pass-Through with connection handle and retry on ConnectionLossException """
         value = getattr(zookeeper, name)
         if callable(value):
+            if name in ('create', 'set'):
+                # this may be too much - needs testing
+                value = self._force_async(value)
             return functools.partial(
                 retry_on(zookeeper.ConnectionLossException)(value), 
                 self._handle
             )
         else:
             return name
+
+    def _force_async(self, fn):
+        """ Force server side async for all the write operations """
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            ret = fn(*args, **kwargs)
+            if self.async('/') != zookeeper.OK:
+                raise zookeeper.ConnectionLossException("Unable to flush leader channel")
+            return ret
+        return wrapper
 
     def ensure_exists(self, name, data = ''):
         try:
@@ -99,7 +115,7 @@ class ZooKeeper(object):
         try:
             self.set(name, data, 0)
         except zookeeper.BadVersionException:
-            pass # a previous write succeded 
+            pass # a previous write succeded
 
 class Producer(object):
 
@@ -143,7 +159,10 @@ class Consumer(object):
                 self._zk.set(src, data, stat['version'])
                 self._zk.set(dest, data)
 
-                self._zk.delete(src, stat['version'] + 1)
+                try:
+                    self._zk.delete(src, stat['version'] + 1)
+                except zookeeper.NoNodeException: pass # already removed
+
                 return data
 
             elif stat['ctime'] < (time.time() - 300): # 5 minutes
@@ -170,8 +189,10 @@ class Consumer(object):
     def _blocking_reserve(self):
         def queue_watcher(*args, **kwargs):
             self._zk._cv.acquire()
-            self._zk._cv.notify()
-            self._zk._cv.release()
+            try:
+                self._zk._cv.notify()
+            finally:
+                self._zk._cv.release()
 
         while True:
             self._zk._cv.acquire()
@@ -239,8 +260,14 @@ class GarbageCollector(object):
                             (data, stat) = self._zk.get(cpath + '/item', None)
                             if data:
                                 self._zk.create_sequence('/queue/partial/item-', data)
-                            self._zk.delete(cpath + '/item')
-                            self._zk.delete(cpath)
+
+                            try:
+                                self._zk.delete(cpath + '/item')
+                            except zookeeper.NoNodeException: pass # already removed
+
+                            try:
+                                self._zk.delete(cpath)
+                            except zookeeper.NoNodeException: pass # already removed
             finally:
                 self._remove_dlock()
 
