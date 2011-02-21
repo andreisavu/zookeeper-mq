@@ -36,6 +36,11 @@ ZooKeeper Data Tree Structure
         /active     - ephemeral
         /item
 
+ZooKeeper Availability
+----------------------
+
+A ZooKeeper cluster with N servers will still be available if CEIL(N/2)-1 nodes fail!
+
 Requirements
 ------------
 

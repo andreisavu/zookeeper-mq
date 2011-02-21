@@ -88,6 +88,17 @@ class ZooKeeper(object):
         except zookeeper.NodeExistsException:
             pass # it's fine if the node already exists
 
+    @retry_on(zookeeper.NoNodeException)
+    def create_sequence(self, name, data):
+        """ A safe way of creating an ephemeral node. Worst case scenario 
+        you will end-up creating multiple empty znodes """
+        name = self.create(name, data, 
+            [ZOO_OPEN_ACL_UNSAFE], 
+            zookeeper.SEQUENCE
+        )
+        return self.set(name, data, 0)
+
+
 class Producer(object):
 
     def __init__(self, zk):
@@ -96,13 +107,8 @@ class Producer(object):
         self._zk.ensure_exists('/queue')
         self._zk.ensure_exists('/queue/items')
 
-    @retry_on(zookeeper.NoNodeException)
     def put(self, data):
-        name = self._zk.create("/queue/items/item-", "", 
-            [ZOO_OPEN_ACL_UNSAFE], 
-            zookeeper.SEQUENCE
-        )
-        return self._zk.set(name, data, 0)
+        return self._zk.create_sequence('/queue/items/item-', data)
 
 class Consumer(object):
 
@@ -203,28 +209,62 @@ class GarbageCollector(object):
         map(self._zk.ensure_exists, ('/queue', 
             '/queue/consumers', '/queue/partial'))
  
+    def _get_dlock(self):
+        try:
+            self._zk.create('/queue/gc-lock', '', [ZOO_OPEN_ACL_UNSAFE], zookeeper.EPHEMERAL)
+            return True
+
+        except zookeeper.NodeExistsException:
+            return False
+
+    def _remove_dlock(self):
+        try:
+            self._zk.delete('/queue/gc-lock')
+        except zookeeper.NoNodeException:
+            pass 
+        
     def collect(self):
-        children = self._zk.get_children('/queue/consumers', None)
-        for child in children:
-            # XXX remove old inactive consumers
-            break
+        if self._get_dlock():
+            try:
+                children = self._zk.get_children('/queue/consumers', None)
+                for child in children:
+                    cpath = '/queue/consumers/' + child 
+                    if not self._zk.exists(cpath + '/active'):
+                        (data, stat) = self._zk.get(cpath, None)
+                        if stat['ctime'] < (time.time() - 300): # 5 minutes
+                            (data, stat) = self._zk.get(cpath + '/item', None)
+                            if data:
+                                self._zk.create_sequence('/queue/partial/item-', data)
+                            self._zk.delete(cpath + '/item')
+                            self._zk.delete(cpath)
+            finally:
+                self._remove_dlock()
 
 if __name__ == '__main__':
-    zk = ZooKeeper("localhost:2181,localhost:2182")
+    zk = ZooKeeper("localhost:2181,localhost:2182,localhost:2183,"\
+        "localhost:2184,localhost:2185")
 
     p = Producer(zk)
-    p.put('value-1')
-    p.put('value-2')
+    map(p.put, map(str, range(1,10)))
 
     c = Consumer(zk)
     print c
 
+    # do a blocking reserve
     print c.reserve(block = True)
     c.done()
 
-    print c.reserve()
-    c.done()
+    # remove all the remaining elements without blocking
+    while True:
+        data = c.reserve()
+        if not data: break
+        print data
+        c.done()
     c.close()
+
+    # do garbage collection
+    gc = GarbageCollector(zk)
+    gc.collect()
 
     zk.close()
 
