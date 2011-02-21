@@ -2,7 +2,7 @@
 Message Queue based on ZooKeeper
 ================================
 
-WARNING: This is work in progress and it's not production ready.
+WARNING: This is work in progress and it's not production ready (more like a proof of concept)
 
 Objectives
 ----------
