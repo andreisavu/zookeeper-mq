@@ -96,8 +96,10 @@ class ZooKeeper(object):
             [ZOO_OPEN_ACL_UNSAFE], 
             zookeeper.SEQUENCE
         )
-        return self.set(name, data, 0)
-
+        try:
+            self.set(name, data, 0)
+        except zookeeper.BadVersionException:
+            pass # a previous write succeded 
 
 class Producer(object):
 
@@ -132,12 +134,16 @@ class Consumer(object):
     def _fullpath(self, sufix):
         return self._id + sufix
 
+    @retry_on(zookeeper.BadVersionException)
     def _move(self, src, dest):
         try:
             (data, stat) = self._zk.get(src, None)
             if data:
+                # create a temporary optimistic lock by forcing a version increase
+                self._zk.set(src, data, stat['version'])
                 self._zk.set(dest, data)
-                self._zk.delete(src, stat['version'])
+
+                self._zk.delete(src, stat['version'] + 1)
                 return data
 
             elif stat['ctime'] < (time.time() - 300): # 5 minutes
@@ -147,16 +153,13 @@ class Consumer(object):
                     self._zk.delete(src)
                 except zookeeper.NoNodeException:
                     pass # someone else already removed the node
+
                 return None
 
         except zookeeper.NoNodeException:
             # a consumer already reserved this znode
             self._zk.set(dest, '')
             return None
-
-        except zookeeper.BadVersionException:
-            # someone is modifying the queue in place. You can re-read or abort.
-            raise
 
     def reserve(self, block = False):
         if block:
@@ -172,13 +175,14 @@ class Consumer(object):
 
         while True:
             self._zk._cv.acquire()
-            children = sorted(self._zk.get_children('/queue/items', queue_watcher))
-            for child in children:
-                data = self._move('/queue/items/' + child, self._fullpath('/item'))
-                if data:
-                    self._zk._cv.release()
-                    return data
+            try:
+                children = sorted(self._zk.get_children('/queue/items', queue_watcher))
+                for child in children:
+                    data = self._move('/queue/items/' + child, self._fullpath('/item'))
+                    if data:
+                        return data
                 self._zk._cv.wait()
+            finally:
                 self._zk._cv.release()
 
     def _simple_reserve(self):
