@@ -38,7 +38,7 @@ class ZooKeeper(object):
         self._connect()
 
     def _connect(self):
-        """ Open a connection to the quorum """
+        """ Open a connection to the quorum and for it to be established """
         def watcher(handle, type, state, path):
             self._cv.acquire()
             self._connected = True
@@ -68,7 +68,7 @@ class ZooKeeper(object):
         return wrapper
 
     def __getattr__(self, name):
-        """ Pass-Through and retry on ConnectionLossException """
+        """ Pass-Through with connection handle and retry on ConnectionLossException """
         value = getattr(zookeeper, name)
         if callable(value):
             return functools.partial(
@@ -93,14 +93,74 @@ class Producer(object):
         self._zk.ensure_exists('/queue/items')
 
     def put(self, data):
-        name = self._zk.create("/queue/items/item-", '', 
+        name = self._zk.create("/queue/items/item-", "", 
             [ZOO_OPEN_ACL_UNSAFE], 
             zookeeper.SEQUENCE
         )
-        return self._zk.set2(name, data)
+        return self._zk.set(name, data, 0)
 
-zk = ZooKeeper("localhost:2181,localhost:2182/zookeeper")
+class Consumer(object):
 
-p = Producer(zk)
-p.put('test')
+    def __init__(self, zk):
+        self._zk = zk
+        self._id = None
+
+        map(self._zk.ensure_exists, ('/queue', '/queue/items', 
+            '/queue/consumers', '/queue/partial'))
+        self._register()
+
+    def _register(self):
+        self._id = self._zk.create("/queue/consumers/consumer-", '', 
+            [ZOO_OPEN_ACL_UNSAFE], zookeeper.SEQUENCE)
+
+        self._zk.create(self._fullpath('/active'), '',
+            [ZOO_OPEN_ACL_UNSAFE], zookeeper.EPHEMERAL)
+        self._zk.create(self._fullpath('/item'), '',
+            [ZOO_OPEN_ACL_UNSAFE], 0)
+
+    def _fullpath(self, sufix):
+        return self._id + sufix
+
+    def _move(self, src, dest):
+        try:
+            (data, stat) = self._zk.get(src, None)
+            self._zk.set(dest, data)
+            self._zk.delete(src, stat['version'])
+            return data
+
+        except zookeeper.NoNodeException:
+            # a consumer already moved this znode
+            self._zk.set(dest, '')
+            return None
+
+        except zookeeper.BadVersionException:
+            # someone is modifying the queue in place. You can re-read or abort.
+            raise
+
+    def reserve(self):
+        while True:
+            children = sorted(self._zk.get_children('/queue/items', None))
+            if len(children) == 0:
+                return None
+            for child in children:
+                data = self._move('/queue/items/' + child, self._fullpath('/item'))
+                if data: return data
+
+    def done(self):
+        self._zk.set(self._fullpath('/item'), '')
+
+    def __repr__(self):
+        return '<Consumer id=%r>' % self._id
+
+if __name__ == '__main__':
+    zk = ZooKeeper("localhost:2181,localhost:2182")
+
+    p = Producer(zk)
+    p.put('test value')
+
+    c = Consumer(zk)
+    print c
+    print c.reserve()
+
+    zk.close()
 

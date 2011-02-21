@@ -20,21 +20,21 @@ ZooKeeper Data Tree Structure
 
 <chroot-prefix OR />/
   /queue
-    /messages/
-      /message-1
-      /message-2
+    /items/
+      /item-1
+      /item-2
       ...
     /partial        - total consumer failure
-      /message-1
-      /message-2
+      /item-1
+      /item-2
       ...
     /consumers
       /consumer-1
-        /status     - ephemeral znode
-        /message
+        /active     - ephemeral znode
+        /item
       /consumer-2
-        /status     - ephemeral
-        /message
+        /active     - ephemeral
+        /item
 
 Requirements
 ------------
