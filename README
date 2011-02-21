@@ -24,7 +24,7 @@ ZooKeeper Data Tree Structure
       /item-1
       /item-2
       ...
-    /partial        - total consumer failure
+    /partial        - items reserved but not marked as done (consumer failure)
       /item-1
       /item-2
       ...
@@ -40,6 +40,9 @@ ZooKeeper Availability
 ----------------------
 
 A ZooKeeper cluster with N servers will still be available if CEIL(N/2)-1 nodes fail!
+
+E.g. if you run a cluster with five nodes you will to take one offline for maintenance
+anytime and you will still be able to handle an unexpected failure.
 
 Requirements
 ------------
@@ -71,24 +74,30 @@ After all this you should be able to do:
 $ python -c "import zookeeper;print zookeeper.__version__"
 3.4.0
 
-How to test?
-------------
+Fault Injection Testing Scenarios
+---------------------------------
 
-You need to start a Zookeeper cluster and (optionaly) a rest interface. The repo
-contains everything needed for starting a ZooKeeper cluster with 5 nodes and
-a rest interface by running the following commands:
+I'm not going to test the producer and the consumer code. I'm trying to
+to test the availability and reliability of the ZooKeeper quorum when used
+for storing the queue data.
+
+Start a ZooKeeper quorum and the fault injector:
 
 $ cd test_5_trunk
-$ ./start.sh       - will start zookeeper and the rest interface
-
-Stop it by running:
-$ ./stop.sh
-
-You can simulate failures on the cluster nodes by running:
-$ python fail.py 
-
-Clean data by running:
 $ ./clean.sh
+$ ./start.sh
+$ python fail.py
+
+Push 500 elements:
+
+$ ./put_all.py 
+
+Check 500 elements (also checks that the sequence is strictly increasing):
+
+$ ./check_all.py 
+
+It should work like a charm most of the time! :) Keep in mind that you
+are not going to experience this amount of critical failures in production.
 
 License
 -------
