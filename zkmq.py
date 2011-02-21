@@ -129,7 +129,7 @@ class Consumer(object):
             return data
 
         except zookeeper.NoNodeException:
-            # a consumer already moved this znode
+            # a consumer already reserved this znode
             self._zk.set(dest, '')
             return None
 
@@ -137,7 +137,30 @@ class Consumer(object):
             # someone is modifying the queue in place. You can re-read or abort.
             raise
 
-    def reserve(self):
+    def reserve(self, block = False):
+        if block:
+            return self._blocking_reserve()
+        else:
+            return self._simple_reserve()
+
+    def _blocking_reserve(self):
+        def queue_watcher(*args, **kwargs):
+            self._zk._cv.acquire()
+            self._zk._cv.notify()
+            self._zk._cv.release()
+
+        while True:
+            self._zk._cv.acquire()
+            children = sorted(self._zk.get_children('/queue/items', queue_watcher))
+            for child in children:
+                data = self._move('/queue/items/' + child, self._fullpath('/item'))
+                if data:
+                    self._zk._cv.release()
+                    return data
+                self._zk._cv.wait()
+                self._zk._cv.release()
+
+    def _simple_reserve(self):
         while True:
             children = sorted(self._zk.get_children('/queue/items', None))
             if len(children) == 0:
@@ -149,6 +172,11 @@ class Consumer(object):
     def done(self):
         self._zk.set(self._fullpath('/item'), '')
 
+    def close(self):
+        map(self._zk.delete, (self._fullpath('/item'), 
+            self._fullpath('/active'), self._id))
+        self._id = None
+
     def __repr__(self):
         return '<Consumer id=%r>' % self._id
 
@@ -156,11 +184,19 @@ if __name__ == '__main__':
     zk = ZooKeeper("localhost:2181,localhost:2182")
 
     p = Producer(zk)
-    p.put('test value')
+    p.put('value-1')
+    p.put('value-2')
 
     c = Consumer(zk)
     print c
+
+    print c.reserve(block = True)
+    c.done()
+
     print c.reserve()
+    c.done()
+    c.close()
 
     zk.close()
+
 
