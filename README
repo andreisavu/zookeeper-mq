@@ -86,7 +86,7 @@ Start a ZooKeeper quorum and the fault injector:
 $ cd test_5_trunk
 $ ./clean.sh
 $ ./start.sh
-$ python fail.py
+$ python fail.py leader
 
 Push 500 elements:
 
@@ -96,8 +96,8 @@ Check 500 elements (also checks that the sequence is strictly increasing):
 
 $ ./check_all.py 
 
-It should work like a charm most of the time! :) Keep in mind that you
-are not going to experience this amount of critical failures in production.
+It should work like a charm! :) Keep in mind that you are not going to experience 
+this amount of critical failures in production.
 
 License
 -------

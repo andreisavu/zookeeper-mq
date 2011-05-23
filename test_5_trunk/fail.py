@@ -16,13 +16,29 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     nodes = get_nodes()
+    leader = True if len(sys.argv) == 2 and  sys.argv[1] == 'leader' else False
     while True:
-        n = random.choice(nodes)
+        if leader:
+            n = find_leader(nodes)
+        else:
+            n = random.choice(nodes)
         kill_node(n)
+	time.sleep(5)
         start_node(n)
         wait_join_cluster(n)
-        time.sleep(1)
+        time.sleep(5)
 
+def find_leader(nodes):
+    for host, port in nodes:
+        try:
+            s = socket.socket()
+            s.connect((host, int(port)))
+            s.send('stat')
+            if 'Mode: leader' in s.recv(1024):
+                return (host, port)
+        finally:
+            s.close()
+            
 def kill_node(n):
     print 'stoping node %s ...' % (n,)
     host, port = n

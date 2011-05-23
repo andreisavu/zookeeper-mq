@@ -78,9 +78,9 @@ class ZooKeeper(object):
         """ Pass-Through with connection handle and retry on ConnectionLossException """
         value = getattr(zookeeper, name)
         if callable(value):
-            if name in ('create', 'set'):
+            # if name in ('create', 'set'):
                 # this may be too much - needs testing
-                value = self._force_async(value)
+                # value = self._force_async(value)
             return functools.partial(
                 retry_on(zookeeper.ConnectionLossException)(value), 
                 self._handle
@@ -108,7 +108,7 @@ class ZooKeeper(object):
     def create_sequence(self, name, data):
         """ A safe way of creating an ephemeral node. Worst case scenario 
         you will end-up creating multiple empty znodes """
-        name = self.create(name, data, 
+        name = self.create(name, '', 
             [ZOO_OPEN_ACL_UNSAFE], 
             zookeeper.SEQUENCE
         )
