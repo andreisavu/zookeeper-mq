@@ -2,7 +2,9 @@
 Message Queue based on ZooKeeper
 ================================
 
-WARNING: This is work in progress and it's not production ready (more like a proof of concept)
+NOTICE: This is work in progress and it's not production ready (more like a proof of concept)
+
+NOTICE: It should be easy to rewrite the code in Java by following the same concepts.
 
 Objectives
 ----------
@@ -92,9 +94,17 @@ Push 500 elements:
 
 $ ./put_all.py 
 
+or 
+
+$ PYTHONPATH=lib.linux-x86_64-2.6/ LD_LIBRARY_PATH=lib.linux-x86_64-2.6/ ./put_all.py
+
 Check 500 elements (also checks that the sequence is strictly increasing):
 
 $ ./check_all.py 
+
+or 
+
+$ PYTHONPATH=lib.linux-x86_64-2.6/ LD_LIBRARY_PATH=lib.linux-x86_64-2.6/ ./check_all.py
 
 It should work like a charm! :) Keep in mind that you are not going to experience 
 this amount of critical failures in production.
