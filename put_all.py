@@ -22,8 +22,13 @@ import os, sys
 from zkmq import ZooKeeper, Producer
 
 def create_zk():
-    return ZooKeeper("localhost:2181,localhost:2182,localhost:2183,"\
-        "localhost:2184,localhost:2185")
+    quorum = "localhost:2181,localhost:2182,localhost:2183,"\
+        "localhost:2184,localhost:2185"
+
+    if 'ZOOKEEPER_QUORUM' in os.environ:
+        quorum = os.environ['ZOOKEEPER_QUORUM']
+
+    return ZooKeeper(quorum)
 
 def main():
     zk = create_zk()

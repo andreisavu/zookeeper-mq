@@ -26,8 +26,13 @@ def main():
     return parent_main() if os.fork() else child_main()
 
 def create_zk():
-    return ZooKeeper("localhost:2181,localhost:2182,localhost:2183,"\
-        "localhost:2184,localhost:2185")
+    quorum = "localhost:2181,localhost:2182,localhost:2183,"\
+        "localhost:2184,localhost:2185"
+
+    if 'ZOOKEEPER_QUORUM' in os.environ:
+        quorum = os.environ['ZOOKEEPER_QUORUM']
+
+    return ZooKeeper(quorum)
 
 def parent_main():
     zk = create_zk()
