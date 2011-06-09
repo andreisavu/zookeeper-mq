@@ -78,25 +78,13 @@ class ZooKeeper(object):
         """ Pass-Through with connection handle and retry on ConnectionLossException """
         value = getattr(zookeeper, name)
         if callable(value):
-            # if name in ('create', 'set'):
-                # this may be too much - needs testing
-                # value = self._force_async(value)
             return functools.partial(
-                retry_on(zookeeper.ConnectionLossException)(value), 
+                retry_on(zookeeper.ConnectionLossException, \
+                    zookeeper.OperationTimeoutException)(value), 
                 self._handle
             )
         else:
             return name
-
-    def _force_async(self, fn):
-        """ Force server side async for all the write operations """
-        @functools.wraps(fn)
-        def wrapper(*args, **kwargs):
-            ret = fn(*args, **kwargs)
-            if self.async('/') != zookeeper.OK:
-                raise zookeeper.ConnectionLossException("Unable to flush leader channel")
-            return ret
-        return wrapper
 
     def ensure_exists(self, name, data = ''):
         try:
