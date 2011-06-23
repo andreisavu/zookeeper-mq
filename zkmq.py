@@ -114,7 +114,7 @@ class Producer(object):
         self._zk.ensure_exists('/queue/items')
 
     def put(self, data, priority = 100):
-        return self._zk.create_sequence('/queue/items/item-%04d-' % priority, str(data))
+        return self._zk.create_sequence('/queue/items/item-%03d-' % priority, str(data))
 
 class Consumer(object):
 
