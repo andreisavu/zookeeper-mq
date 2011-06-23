@@ -1,4 +1,3 @@
-
 Message Queue based on ZooKeeper
 ================================
 
@@ -23,8 +22,8 @@ ZooKeeper Data Tree Structure
 <chroot-prefix OR />/
   /queue
     /items/
-      /item-1
-      /item-2
+      /item-000-1
+      /item-050-2
       ...
     /partial        - items reserved but not marked as done (consumer failure)
       /item-1
