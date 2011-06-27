@@ -23,7 +23,7 @@ import time
 
 zookeeper.set_log_stream(sys.stdout)
 
-ZOO_OPEN_ACL_UNSAFE = {"perms":0x1f, "scheme":"world", "id" :"anyone"};
+ZOO_OPEN_ACL_UNSAFE = {"perms":0x1f, "scheme":"world", "id" :"anyone"}
 
 def retry_on(*excepts):
     """ Retry function execution if some known exception types are raised """
@@ -103,7 +103,7 @@ class ZooKeeper(object):
         try:
             self.set(name, data, 0)
         except zookeeper.BadVersionException:
-            pass # a previous write succeded
+            pass # a previous write succeeded
 
 class Producer(object):
 
@@ -135,8 +135,8 @@ class Consumer(object):
         self._zk.create(self._fullpath('/item'), '',
             [ZOO_OPEN_ACL_UNSAFE], 0)
 
-    def _fullpath(self, sufix):
-        return self._id + sufix
+    def _fullpath(self, suffix):
+        return self._id + suffix
 
     @retry_on(zookeeper.BadVersionException)
     def _move(self, src, dest):
