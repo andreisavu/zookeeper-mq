@@ -118,9 +118,10 @@ class Producer(object):
 
 class Consumer(object):
 
-    def __init__(self, zk):
+    def __init__(self, zk, active = None):
         self._zk = zk
         self._id = None
+        self.active = active
 
         map(self._zk.ensure_exists, ('/queue', '/queue/items', 
             '/queue/consumers', '/queue/partial'))
@@ -130,8 +131,13 @@ class Consumer(object):
         self._id = self._zk.create("/queue/consumers/consumer-", '', 
             [ZOO_OPEN_ACL_UNSAFE], zookeeper.SEQUENCE)
 
-        self._zk.create(self._fullpath('/active'), '',
-            [ZOO_OPEN_ACL_UNSAFE], zookeeper.EPHEMERAL)
+        if self.active is None:
+            self._zk.create(self._fullpath('/active'), '',
+                [ZOO_OPEN_ACL_UNSAFE], zookeeper.EPHEMERAL)
+        elif self.active:
+            self._zk.create(self._fullpath('/active'), '',
+                [ZOO_OPEN_ACL_UNSAFE], 0)
+
         self._zk.create(self._fullpath('/item'), '',
             [ZOO_OPEN_ACL_UNSAFE], 0)
 
