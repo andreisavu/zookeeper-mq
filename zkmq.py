@@ -152,11 +152,7 @@ class Consumer(object):
                 # create a temporary optimistic lock by forcing a version increase
                 self._zk.set(src, data, stat['version'])
                 self._zk.set(dest, data)
-
-                try:
-                    self._zk.delete(src, stat['version'] + 1)
-                except zookeeper.NoNodeException: pass # already removed
-
+                self._zk.delete(src, stat['version'] + 1)
                 return data
 
             elif stat['ctime'] < (time.time() - 300): # 5 minutes
