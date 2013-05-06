@@ -155,7 +155,7 @@ class Consumer(object):
                 self._zk.delete(src, stat['version'] + 1)
                 return data
 
-            elif stat['ctime'] < (time.time() - 300): # 5 minutes
+            elif stat['ctime'] < 1000*(time.time() - 300): # 5 minutes. stat['ctime'] is in milliseconds since epoch.
                 # a producer failed to enqueue an element
                 # the consumer should just drop the empty item
                 try:
@@ -246,7 +246,7 @@ class GarbageCollector(object):
                     cpath = '/queue/consumers/' + child 
                     if not self._zk.exists(cpath + '/active'):
                         (data, stat) = self._zk.get(cpath, None)
-                        if stat['ctime'] < (time.time() - 300): # 5 minutes
+                        if stat['ctime'] < 1000*(time.time() - 300): # 5 minutes
                             (data, stat) = self._zk.get(cpath + '/item', None)
                             if data:
                                 self._zk.create_sequence('/queue/partial/item-', data)
