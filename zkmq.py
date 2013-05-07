@@ -44,8 +44,13 @@ def retry_on(*excepts):
 class ZooKeeper(object):
     """ Basic adapter; always retry on ConnectionLossException """
 
-    def __init__(self, quorum):
+    def __init__(self, quorum, timeout=10000):
+        """Connect to ZooKeeper quorum
+
+        timeout -- zookeeper session timeout in milliseconds
+        """
         self._quorum = quorum
+        self._timeout = timeout
 
         self._handle = None
         self._connected = False
@@ -65,9 +70,9 @@ class ZooKeeper(object):
 
         self._cv.acquire()
         try:
-            self._handle = zookeeper.init(self._quorum, watcher, 10000)
+            self._handle = zookeeper.init(self._quorum, watcher, self._timeout)
 
-            self._cv.wait(10.0)
+            self._cv.wait(self._timeout/1000)
             if not self._connected:
                 print >>sys.stderr, 'Unable to connecto the ZooKeeper cluster.'
                 sys.exit(-1)
